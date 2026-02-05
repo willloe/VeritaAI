@@ -1,0 +1,91 @@
+/*
+ * Design Tokens — Trello Dark Theme
+ * Extracted from reference screenshots for pixel-perfect fidelity.
+ * All component styles reference these variables for rapid iteration.
+ */
+
+:root {
+  /* ── Surface Colors ── */
+  --surface-board: #1d2125;
+  --surface-overlay: #282e33;
+  --surface-overlay-hovered: #333c43;
+  --surface-raised: #22272b;
+  --surface-raised-hovered: #282e33;
+  --surface-sunken: #1d2125;
+  --surface-input: #22272b;
+
+  /* ── Text Colors ── */
+  --text-default: #b6c2cf;
+  --text-subtle: #9fadbc;
+  --text-subtlest: #8c9bab;
+  --text-inverse: #1d2125;
+  --text-link: #579dff;
+
+  /* ── Border Colors ── */
+  --border-default: #a6c5e229;
+  --border-subtle: #a1bdd914;
+
+  /* ── Accent Colors (list header cards) ── */
+  --accent-blue: #579dff;
+  --accent-blue-subtle: #09326c;
+  --accent-green: #4bce97;
+  --accent-green-subtle: #164b35;
+  --accent-red: #f87168;
+  --accent-red-subtle: #5d1f1a;
+  --accent-purple: #9f8fef;
+  --accent-purple-subtle: #352c63;
+  --accent-orange: #fea362;
+  --accent-orange-subtle: #5f3811;
+  --accent-yellow: #f5cd47;
+  --accent-yellow-subtle: #533f04;
+
+  /* ── Card header cover colors (from screenshots) ── */
+  --cover-blue: #1558be;
+  --cover-green: #216e4e;
+  --cover-red: #c9372c;
+  --cover-purple: #6e5dc6;
+  --cover-orange: #c25100;
+  --cover-yellow: #7f5f01;
+  --cover-sky: #227d9b;
+  --cover-lime: #4c6b1f;
+  --cover-pink: #ae4787;
+
+  /* Bright cover colors as seen in template/header cards */
+  --cover-bright-blue: #579dff;
+  --cover-bright-green: #4bce97;
+  --cover-bright-red: #f87462;
+  --cover-bright-purple: #9f8fef;
+  --cover-bright-orange: #fea362;
+
+  /* ── Shadows ── */
+  --shadow-card: 0 1px 1px rgba(9, 30, 66, 0.25), 0 0 1px rgba(9, 30, 66, 0.31);
+  --shadow-card-dragging: 0 8px 16px rgba(9, 30, 66, 0.25), 0 0 1px rgba(9, 30, 66, 0.31);
+  --shadow-list: 0 1px 1px rgba(9, 30, 66, 0.25), 0 0 1px rgba(9, 30, 66, 0.31);
+  --shadow-overlay: 0 8px 12px rgba(9, 30, 66, 0.15), 0 0 1px rgba(9, 30, 66, 0.31);
+  --shadow-modal: 0 0 0 1px rgba(9, 30, 66, 0.08), 0 2px 1px rgba(9, 30, 66, 0.08), 0 0 20px -6px rgba(9, 30, 66, 0.31);
+
+  /* ── Border Radii ── */
+  --radius-card: 8px;
+  --radius-list: 12px;
+  --radius-button: 3px;
+  --radius-modal: 12px;
+
+  /* ── Spacing ── */
+  --spacing-list-gap: 8px;
+  --spacing-card-gap: 6px;
+  --spacing-card-px: 8px;
+  --spacing-card-py: 6px;
+  --spacing-list-px: 8px;
+  --spacing-list-py: 8px;
+
+  /* ── Backdrop ── */
+  --backdrop: rgba(0, 0, 0, 0.64);
+
+  /* ── Typography ── */
+  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans', Ubuntu, 'Droid Sans', 'Helvetica Neue', sans-serif;
+
+  /* ── Transitions ── */
+  --transition-fast: 85ms ease;
+  --transition-normal: 150ms ease;
+  --transition-slow: 250ms ease;
+}

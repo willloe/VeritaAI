@@ -1,0 +1,112 @@
+{
+  "board": {
+    "id": "board-1",
+    "name": "Kanban Template",
+    "backgroundUrl": ""
+  },
+  "lists": [
+    { "id": "list-1", "boardId": "board-1", "title": "Backlog", "position": 0, "emoji": "\ud83d\udd12", "headerColor": "blue" },
+    { "id": "list-2", "boardId": "board-1", "title": "Design", "position": 1, "emoji": "\ud83c\udfa8", "headerColor": "purple" },
+    { "id": "list-3", "boardId": "board-1", "title": "To Do", "position": 2, "emoji": "\ud83e\udd14", "headerColor": "orange" },
+    { "id": "list-4", "boardId": "board-1", "title": "Doing", "position": 3, "emoji": "\ud83d\ude0e", "headerColor": "orange" },
+    { "id": "list-5", "boardId": "board-1", "title": "Code Review", "position": 4, "emoji": "\ud83d\ude2c", "headerColor": "red" },
+    { "id": "list-6", "boardId": "board-1", "title": "Testing", "position": 5, "emoji": "\u261d\ufe0f", "headerColor": "red" },
+    { "id": "list-7", "boardId": "board-1", "title": "Done", "position": 6, "emoji": "\ud83c\udf89", "headerColor": "green" }
+  ],
+  "cards": [
+    {
+      "id": "card-1",
+      "listId": "list-1",
+      "title": "Backlog",
+      "position": 0,
+      "coverColor": "blue",
+      "badgeDescription": true,
+      "badgeAttachments": 1
+    },
+    {
+      "id": "card-2",
+      "listId": "list-1",
+      "title": "[Example task]",
+      "position": 1
+    },
+    {
+      "id": "card-3",
+      "listId": "list-2",
+      "title": "Design & Research",
+      "position": 0,
+      "badgeAttachments": 1
+    },
+    {
+      "id": "card-4",
+      "listId": "list-2",
+      "title": "[Example task with designs]",
+      "position": 1,
+      "badgeDescription": true
+    },
+    {
+      "id": "card-5",
+      "listId": "list-3",
+      "title": "To Do",
+      "position": 0
+    },
+    {
+      "id": "card-6",
+      "listId": "list-4",
+      "title": "Doing",
+      "position": 0
+    },
+    {
+      "id": "card-7",
+      "listId": "list-5",
+      "title": "Code Review",
+      "position": 0,
+      "coverColor": "red",
+      "badgeDescription": true,
+      "badgeAttachments": 1
+    },
+    {
+      "id": "card-8",
+      "listId": "list-5",
+      "title": "This list has the List Limits Power-up enabled, to help the team prioritize and remove bottlenecks before picking up new work. The list will be highlighted if the number of cards in it passes the limit that the team determines based on team size.",
+      "position": 1
+    },
+    {
+      "id": "card-9",
+      "listId": "list-5",
+      "title": "[Example task]",
+      "position": 2
+    },
+    {
+      "id": "card-10",
+      "listId": "list-5",
+      "title": "[Example task]",
+      "position": 3
+    },
+    {
+      "id": "card-11",
+      "listId": "list-6",
+      "title": "Testing",
+      "position": 0,
+      "coverColor": "red",
+      "badgeDescription": true,
+      "badgeAttachments": 1
+    },
+    {
+      "id": "card-12",
+      "listId": "list-7",
+      "title": "Done",
+      "position": 0,
+      "coverColor": "green",
+      "badgeDescription": true,
+      "badgeAttachments": 2
+    },
+    {
+      "id": "card-13",
+      "listId": "list-7",
+      "title": "[Completed task]",
+      "position": 1,
+      "completed": true,
+      "dueDate": "2020-01-23"
+    }
+  ]
+}
