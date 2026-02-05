@@ -30,30 +30,61 @@
       "position": 1
     },
     {
+      "id": "card-14",
+      "listId": "list-2",
+      "title": "Design",
+      "position": 0,
+      "coverColor": "purple",
+      "badgeDescription": true,
+      "badgeAttachments": 1
+    },
+    {
       "id": "card-3",
       "listId": "list-2",
       "title": "Design & Research",
-      "position": 0,
+      "position": 1,
       "badgeAttachments": 1
     },
     {
       "id": "card-4",
       "listId": "list-2",
       "title": "[Example task with designs]",
-      "position": 1,
+      "position": 2,
       "badgeDescription": true
+    },
+    {
+      "id": "card-15",
+      "listId": "list-3",
+      "title": "To-Do",
+      "position": 0,
+      "coverColor": "orange"
     },
     {
       "id": "card-5",
       "listId": "list-3",
       "title": "To Do",
-      "position": 0
+      "position": 1
+    },
+    {
+      "id": "card-16",
+      "listId": "list-4",
+      "title": "Doing",
+      "position": 0,
+      "coverColor": "orange"
     },
     {
       "id": "card-6",
       "listId": "list-4",
       "title": "Doing",
-      "position": 0
+      "position": 1,
+      "badgeDescription": true,
+      "badgeAttachments": 1
+    },
+    {
+      "id": "card-17",
+      "listId": "list-4",
+      "title": "[Example task]",
+      "position": 2
     },
     {
       "id": "card-7",

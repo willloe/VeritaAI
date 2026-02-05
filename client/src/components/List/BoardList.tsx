@@ -55,7 +55,7 @@ export function BoardList({ list }: BoardListProps) {
   }, [list.id, setAddComposer]);
 
   return (
-    <div className="relative flex w-[272px] min-w-[272px] flex-col rounded-list bg-surface-overlay max-h-full">
+    <div className="relative flex w-[272px] min-w-[272px] flex-col rounded-list bg-surface-overlay max-h-[calc(100vh-100px)]">
       {/* List header */}
       <ListHeader
         list={list}

@@ -179,7 +179,7 @@ export function Board({ demo }: BoardProps) {
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
       >
-        <div className="flex h-[calc(100vh-52px)] gap-3 overflow-x-auto overflow-y-hidden p-3 pb-2">
+        <div className="flex h-[calc(100vh-52px)] items-start gap-3 overflow-x-auto overflow-y-hidden p-3 pb-2">
           {lists.map((list) => (
             <BoardList key={list.id} list={list} />
           ))}
