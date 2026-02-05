@@ -1,4 +1,4 @@
-import type { BoardData, Card, MoveCardPayload } from '@/types';
+import type { BoardData, Card, List, MoveCardPayload } from '@/types';
 
 const BASE = '/api';
 
@@ -34,6 +34,14 @@ export const api = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
+    });
+  },
+
+  addList(title: string, boardId?: string): Promise<List> {
+    return json<List>(`${BASE}/lists`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, boardId: boardId || 'board-1' }),
     });
   },
 

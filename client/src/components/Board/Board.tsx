@@ -12,6 +12,7 @@ import {
 } from '@dnd-kit/core';
 import { useBoardStore } from '@/store';
 import { BoardList } from '../List/BoardList';
+import { AddListComposer } from '../List/AddListComposer';
 import { CardTile } from '../Card/CardTile';
 import { CardModal } from '../CardModal/CardModal';
 import { DemoPanel } from '../DemoPanel/DemoPanel';
@@ -183,6 +184,7 @@ export function Board({ demo }: BoardProps) {
           {lists.map((list) => (
             <BoardList key={list.id} list={list} />
           ))}
+          <AddListComposer />
         </div>
 
         <DragOverlay dropAnimation={null}>

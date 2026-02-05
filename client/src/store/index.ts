@@ -18,6 +18,7 @@ interface BoardState extends UIState {
 
   // Data actions
   fetchBoard: () => Promise<void>;
+  addList: (title: string) => Promise<void>;
   addCard: (listId: string, title: string) => Promise<void>;
   updateCard: (cardId: string, data: Partial<Pick<Card, 'title' | 'description' | 'completed'>>) => Promise<void>;
   toggleCardComplete: (cardId: string) => void;
@@ -60,6 +61,11 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     } catch {
       set({ loading: false });
     }
+  },
+
+  addList: async (title) => {
+    const list = await api.addList(title);
+    set((s) => ({ lists: [...s.lists, list] }));
   },
 
   addCard: async (listId, title) => {

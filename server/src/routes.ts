@@ -149,6 +149,30 @@ router.post('/cards/move', (req: Request, res: Response) => {
   res.json({ success: true });
 });
 
+// POST /lists — add a new list
+router.post('/lists', (req: Request, res: Response) => {
+  const { title, boardId } = req.body;
+
+  if (!title || typeof title !== 'string') {
+    res.status(400).json({ error: 'title is required' });
+    return;
+  }
+
+  const data = readData();
+  const maxPos = data.lists.length > 0 ? Math.max(...data.lists.map((l) => l.position)) + 1 : 0;
+
+  const list: BoardList = {
+    id: `list-${++nextId}`,
+    boardId: boardId || 'board-1',
+    title: title.trim(),
+    position: maxPos,
+  };
+
+  data.lists.push(list);
+  writeData(data);
+  res.status(201).json(list);
+});
+
 // PATCH /lists/:listId — update list title
 router.patch('/lists/:listId', (req: Request, res: Response) => {
   const { listId } = req.params;

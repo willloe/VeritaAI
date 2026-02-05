@@ -117,7 +117,7 @@ export function CardTile({ card, isDragging, isDragOverlay }: CardTileProps) {
             {hasCover ? (
               <span className="text-[14px] leading-5 text-text-default">{card.title}</span>
             ) : (
-              <span className={`text-[14px] leading-5 break-words ${card.completed ? 'text-text-subtlest line-through' : 'text-text-default'}`}>
+              <span className="text-[14px] leading-5 break-words text-text-default">
                 {card.title}
               </span>
             )}
