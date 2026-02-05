@@ -100,6 +100,7 @@ router.patch('/cards/:cardId', (req: Request, res: Response) => {
 
   if (req.body.title !== undefined) card.title = req.body.title;
   if (req.body.description !== undefined) card.description = req.body.description;
+  if (req.body.completed !== undefined) card.completed = req.body.completed;
 
   writeData(data);
   res.json(card);

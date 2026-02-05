@@ -21,7 +21,7 @@ export const api = {
     });
   },
 
-  updateCard(cardId: string, data: Partial<Pick<Card, 'title' | 'description'>>): Promise<Card> {
+  updateCard(cardId: string, data: Partial<Pick<Card, 'title' | 'description' | 'completed'>>): Promise<Card> {
     return json<Card>(`${BASE}/cards/${cardId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },

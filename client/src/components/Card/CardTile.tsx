@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import type { Card } from '@/types';
 import { useBoardStore } from '@/store';
 
@@ -31,10 +31,19 @@ const EMOJI_MAP: Record<string, string> = {
 
 export function CardTile({ card, isDragging, isDragOverlay }: CardTileProps) {
   const setSelectedCard = useBoardStore((s) => s.setSelectedCard);
+  const toggleCardComplete = useBoardStore((s) => s.toggleCardComplete);
   const draggingCardId = useBoardStore((s) => s.draggingCardId);
   const [isHovered, setIsHovered] = useState(false);
+  const [justCompleted, setJustCompleted] = useState(false);
 
   const isBeingDragged = draggingCardId === card.id;
+
+  useEffect(() => {
+    if (justCompleted) {
+      const timer = setTimeout(() => setJustCompleted(false), 700);
+      return () => clearTimeout(timer);
+    }
+  }, [justCompleted]);
 
   const handleClick = useCallback(() => {
     if (!isDragOverlay) {
@@ -42,9 +51,22 @@ export function CardTile({ card, isDragging, isDragOverlay }: CardTileProps) {
     }
   }, [card.id, isDragOverlay, setSelectedCard]);
 
+  const handleToggleComplete = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      if (!card.completed) {
+        setJustCompleted(true);
+      }
+      toggleCardComplete(card.id);
+    },
+    [card.id, card.completed, toggleCardComplete]
+  );
+
   const hasCover = !!card.coverColor;
   const coverBg = card.coverColor ? COVER_COLORS[card.coverColor] : undefined;
   const emoji = card.coverColor ? EMOJI_MAP[card.coverColor] : undefined;
+
+  const showCircle = (isHovered || card.completed) && !isDragOverlay && !hasCover;
 
   return (
     <div
@@ -81,17 +103,27 @@ export function CardTile({ card, isDragging, isDragOverlay }: CardTileProps) {
 
       {/* Card body */}
       <div className={`bg-surface-raised px-2 py-[6px] ${hasCover ? 'rounded-b-card' : 'rounded-card'}`}>
-        {hasCover ? (
-          <div className="flex flex-col gap-1">
-            <span className="text-[14px] leading-5 text-text-default">{card.title}</span>
+        <div className="flex items-start gap-[6px]">
+          {/* Completion circle */}
+          {showCircle && (
+            <CompletionButton
+              completed={!!card.completed}
+              justCompleted={justCompleted}
+              onClick={handleToggleComplete}
+            />
+          )}
+
+          <div className="flex flex-1 flex-col gap-1 min-w-0">
+            {hasCover ? (
+              <span className="text-[14px] leading-5 text-text-default">{card.title}</span>
+            ) : (
+              <span className={`text-[14px] leading-5 break-words ${card.completed ? 'text-text-subtlest line-through' : 'text-text-default'}`}>
+                {card.title}
+              </span>
+            )}
             <CardBadges card={card} />
           </div>
-        ) : (
-          <div className="flex flex-col gap-1">
-            <span className="text-[14px] leading-5 text-text-default break-words">{card.title}</span>
-            <CardBadges card={card} />
-          </div>
-        )}
+        </div>
       </div>
 
       {/* Hover edit pencil */}
@@ -122,6 +154,86 @@ export function CardTile({ card, isDragging, isDragOverlay }: CardTileProps) {
         </button>
       )}
     </div>
+  );
+}
+
+/** Animated completion circle with checkmark + radiating burst lines */
+function CompletionButton({
+  completed,
+  justCompleted,
+  onClick,
+}: {
+  completed: boolean;
+  justCompleted: boolean;
+  onClick: (e: React.MouseEvent) => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className="relative flex-shrink-0 mt-[2px] flex items-center justify-center w-[18px] h-[18px] group/check"
+      aria-label={completed ? 'Mark incomplete' : 'Mark complete'}
+      title={completed ? 'Mark incomplete' : 'Mark complete'}
+    >
+      {/* Radiating burst lines */}
+      {justCompleted && (
+        <div className="absolute inset-[-6px] pointer-events-none">
+          {[...Array(8)].map((_, i) => (
+            <span
+              key={i}
+              className="absolute left-1/2 top-1/2 origin-center"
+              style={{
+                width: '2px',
+                height: '8px',
+                backgroundColor: '#4bce97',
+                borderRadius: '1px',
+                transform: `translate(-50%, -50%) rotate(${i * 45}deg)`,
+                animation: `burst-line 500ms ease-out forwards`,
+                animationDelay: `${i * 20}ms`,
+              }}
+            />
+          ))}
+        </div>
+      )}
+
+      {completed ? (
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 18 18"
+          fill="none"
+          style={justCompleted ? { animation: 'check-pop 300ms ease-out' } : undefined}
+        >
+          <circle cx="9" cy="9" r="8" fill="#4bce97" />
+          <path
+            d="M5.5 9.5l2 2 5-5"
+            stroke="#1d2125"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            style={
+              justCompleted
+                ? {
+                    strokeDasharray: 12,
+                    strokeDashoffset: 12,
+                    animation: 'check-draw 300ms ease-out 100ms forwards',
+                  }
+                : undefined
+            }
+          />
+        </svg>
+      ) : (
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <circle
+            cx="9"
+            cy="9"
+            r="7.5"
+            stroke="#738496"
+            strokeWidth="1.5"
+            className="group-hover/check:stroke-[#b6c2cf] transition-colors"
+          />
+        </svg>
+      )}
+    </button>
   );
 }
 

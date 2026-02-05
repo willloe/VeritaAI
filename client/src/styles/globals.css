@@ -25,6 +25,8 @@
   body {
     background-color: var(--surface-board);
     color: var(--text-default);
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   /* Custom scrollbar for lists */
@@ -49,5 +51,39 @@
 @layer utilities {
   .drag-overlay {
     cursor: grabbing;
+  }
+}
+
+/* Completion animation keyframes */
+@keyframes burst-line {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(var(--r, 0deg)) scaleY(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(var(--r, 0deg)) scaleY(1) translateY(-4px);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(var(--r, 0deg)) scaleY(0.5) translateY(-10px);
+  }
+}
+
+@keyframes check-pop {
+  0% {
+    transform: scale(0.6);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes check-draw {
+  to {
+    stroke-dashoffset: 0;
   }
 }

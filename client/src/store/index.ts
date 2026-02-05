@@ -19,7 +19,8 @@ interface BoardState extends UIState {
   // Data actions
   fetchBoard: () => Promise<void>;
   addCard: (listId: string, title: string) => Promise<void>;
-  updateCard: (cardId: string, data: Partial<Pick<Card, 'title' | 'description'>>) => Promise<void>;
+  updateCard: (cardId: string, data: Partial<Pick<Card, 'title' | 'description' | 'completed'>>) => Promise<void>;
+  toggleCardComplete: (cardId: string) => void;
   moveCard: (payload: MoveCardPayload) => void;
   persistMove: (payload: MoveCardPayload) => Promise<void>;
 
@@ -71,6 +72,18 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     set((s) => ({
       cards: s.cards.map((c) => (c.id === cardId ? { ...c, ...updated } : c)),
     }));
+  },
+
+  toggleCardComplete: (cardId) => {
+    const card = get().cards.find((c) => c.id === cardId);
+    if (!card) return;
+    const newCompleted = !card.completed;
+    // Optimistic update
+    set((s) => ({
+      cards: s.cards.map((c) => (c.id === cardId ? { ...c, completed: newCompleted } : c)),
+    }));
+    // Persist
+    api.updateCard(cardId, { completed: newCompleted }).catch(() => get().fetchBoard());
   },
 
   moveCard: (payload) => {
