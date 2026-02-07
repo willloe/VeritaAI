@@ -91,11 +91,11 @@ export function CardTile({ card, isDragging, isDragOverlay }: CardTileProps) {
       {/* Cover / Header Card */}
       {hasCover && (
         <div
-          className="flex items-center gap-1.5 rounded-t-card px-3 py-[10px] min-h-[52px]"
+          className="flex items-center justify-center gap-2 rounded-t-card px-4 min-h-[88px]"
           style={{ backgroundColor: coverBg }}
         >
-          {emoji && <span className="text-[16px]">{emoji}</span>}
-          <span className="text-[16px] font-bold text-[#1d2125] leading-5 truncate">
+          {emoji && <span className="text-[22px]">{emoji}</span>}
+          <span className="text-[18px] font-bold text-[#1d2125] leading-6">
             {card.title}
           </span>
         </div>

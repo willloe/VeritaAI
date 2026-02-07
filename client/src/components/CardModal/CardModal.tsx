@@ -1,19 +1,40 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useBoardStore } from '@/store';
 
+const COVER_COLORS: Record<string, string> = {
+  blue: '#579dff',
+  green: '#4bce97',
+  red: '#f87462',
+  purple: '#9f8fef',
+  orange: '#fea362',
+  yellow: '#f5cd47',
+  sky: '#6cc3e0',
+  lime: '#94c748',
+  pink: '#e774bb',
+};
+
+const EMOJI_MAP: Record<string, string> = {
+  blue: '\ud83d\udd12',
+  green: '\ud83c\udf89',
+  red: '\ud83d\ude2c',
+  purple: '\ud83c\udfa8',
+  orange: '\ud83e\udd14',
+  yellow: '\u2b50',
+};
+
 export function CardModal() {
   const selectedCardId = useBoardStore((s) => s.selectedCardId);
   const cards = useBoardStore((s) => s.cards);
   const lists = useBoardStore((s) => s.lists);
   const setSelectedCard = useBoardStore((s) => s.setSelectedCard);
   const updateCard = useBoardStore((s) => s.updateCard);
+  const toggleCardComplete = useBoardStore((s) => s.toggleCardComplete);
 
   const card = cards.find((c) => c.id === selectedCardId);
   const list = card ? lists.find((l) => l.id === card.listId) : null;
 
   const [isEditingDesc, setIsEditingDesc] = useState(false);
   const [descValue, setDescValue] = useState(card?.description || '');
-  const descRef = useRef<HTMLTextAreaElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
 
   const close = useCallback(() => {
@@ -21,7 +42,6 @@ export function CardModal() {
     setIsEditingDesc(false);
   }, [setSelectedCard]);
 
-  // Escape key handler
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -36,28 +56,35 @@ export function CardModal() {
     return () => document.removeEventListener('keydown', handler);
   }, [close, isEditingDesc]);
 
-  // Focus trap: focus modal on open
   useEffect(() => {
     modalRef.current?.focus();
   }, []);
 
   const handleBackdropClick = useCallback(
     (e: React.MouseEvent) => {
-      if (e.target === e.currentTarget) {
-        close();
-      }
+      if (e.target === e.currentTarget) close();
     },
     [close]
   );
 
   const handleSaveDesc = useCallback(() => {
-    if (card) {
-      updateCard(card.id, { description: descValue });
-    }
+    if (card) updateCard(card.id, { description: descValue });
     setIsEditingDesc(false);
   }, [card, descValue, updateCard]);
 
+  const handleToggleComplete = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      if (card) toggleCardComplete(card.id);
+    },
+    [card, toggleCardComplete]
+  );
+
   if (!card) return null;
+
+  const hasCover = !!card.coverColor;
+  const coverBg = card.coverColor ? COVER_COLORS[card.coverColor] : undefined;
+  const emoji = card.coverColor ? EMOJI_MAP[card.coverColor] : undefined;
 
   return (
     <div
@@ -67,42 +94,125 @@ export function CardModal() {
     >
       <div
         ref={modalRef}
-        className="relative w-full max-w-[768px] rounded-modal bg-surface-overlay shadow-modal mx-4"
+        className="relative w-full max-w-[768px] rounded-modal bg-surface-overlay shadow-modal mx-4 overflow-hidden"
         tabIndex={-1}
         role="dialog"
         aria-modal="true"
         aria-label={`Card: ${card.title}`}
       >
-        {/* Close button */}
-        <button
-          onClick={close}
-          className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-[4px] text-text-subtle hover:bg-surface-overlay-hovered transition-colors z-10"
-          aria-label="Close modal"
-        >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <path d="M4 4l8 8M12 4l-8 8" />
-          </svg>
-        </button>
+        {/* Cover banner */}
+        {hasCover && (
+          <div
+            className="relative flex items-center justify-center min-h-[160px] px-6"
+            style={{ backgroundColor: coverBg }}
+          >
+            {/* List badge top-left */}
+            {list && (
+              <span className="absolute top-3 left-3 flex items-center gap-1 rounded-[3px] bg-black/20 px-2 py-[2px] text-[12px] font-semibold text-white">
+                {list.title}
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor" className="opacity-70">
+                  <path d="M3 4l2 2 2-2" />
+                </svg>
+              </span>
+            )}
 
-        {/* Modal content */}
-        <div className="p-6">
-          {/* Title area */}
-          <div className="flex items-start gap-3 pr-10 mb-6">
-            {/* Card icon */}
-            <div className="mt-1 text-text-subtle">
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <rect x="2" y="3" width="16" height="14" rx="2" />
-                <path d="M2 7h16" />
-              </svg>
+            {/* Cover action icons top-right */}
+            <div className="absolute top-3 right-3 flex items-center gap-1.5">
+              <button className="flex h-8 w-8 items-center justify-center rounded-[4px] bg-black/20 text-white hover:bg-black/30 transition-colors">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <rect x="2" y="2" width="12" height="12" rx="2" />
+                  <circle cx="6" cy="7" r="2" />
+                  <path d="M2 12l3-3 2 2 3-4 4 5" strokeLinejoin="round" />
+                </svg>
+              </button>
+              <button className="flex h-8 w-8 items-center justify-center rounded-[4px] bg-black/20 text-white hover:bg-black/30 transition-colors">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <circle cx="3" cy="8" r="1.5" />
+                  <circle cx="8" cy="8" r="1.5" />
+                  <circle cx="13" cy="8" r="1.5" />
+                </svg>
+              </button>
+              <button
+                onClick={close}
+                className="flex h-8 w-8 items-center justify-center rounded-[4px] bg-black/20 text-white hover:bg-black/30 transition-colors"
+                aria-label="Close modal"
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <path d="M4 4l8 8M12 4l-8 8" />
+                </svg>
+              </button>
             </div>
+
+            {/* Centered emoji + title on cover */}
+            <div className="flex items-center gap-3">
+              {emoji && <span className="text-[32px]">{emoji}</span>}
+              <span className="text-[28px] font-bold text-white leading-9 drop-shadow-sm">
+                {card.title}
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* Close button (when no cover) */}
+        {!hasCover && (
+          <button
+            onClick={close}
+            className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-[4px] text-text-subtle hover:bg-surface-overlay-hovered transition-colors z-10"
+            aria-label="Close modal"
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <path d="M4 4l8 8M12 4l-8 8" />
+            </svg>
+          </button>
+        )}
+
+        {/* Modal body */}
+        <div className="p-6">
+          {/* Title area with completion circle */}
+          <div className="flex items-start gap-3 pr-10 mb-2">
+            <button
+              onClick={handleToggleComplete}
+              className="mt-[6px] flex-shrink-0"
+              aria-label={card.completed ? 'Mark incomplete' : 'Mark complete'}
+            >
+              {card.completed ? (
+                <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                  <circle cx="11" cy="11" r="10" fill="#4bce97" />
+                  <path d="M6.5 11.5l3 3 6-6" stroke="#1d2125" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              ) : (
+                <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                  <circle cx="11" cy="11" r="9.5" stroke="#738496" strokeWidth="1.5" />
+                </svg>
+              )}
+            </button>
             <div>
-              <h2 className="text-[20px] font-semibold leading-6 text-text-default">{card.title}</h2>
-              {list && (
-                <p className="mt-1 text-[14px] text-text-subtle">
+              <h2 className="text-[20px] font-semibold leading-7 text-text-default">{card.title}</h2>
+              {list && !hasCover && (
+                <p className="mt-0.5 text-[14px] text-text-subtle">
                   in list <span className="underline decoration-dotted">{list.title}</span>
                 </p>
               )}
             </div>
+          </div>
+
+          {/* Horizontal action pills */}
+          <div className="flex flex-wrap items-center gap-2 mb-6 ml-[34px]">
+            {[
+              { label: '+ Add', icon: 'add' },
+              { label: 'Labels', icon: 'labels' },
+              { label: 'Dates', icon: 'dates' },
+              { label: 'Checklist', icon: 'checklist' },
+              { label: 'Members', icon: 'members' },
+            ].map(({ label, icon }) => (
+              <button
+                key={label}
+                className="flex items-center gap-1.5 rounded-[3px] bg-surface-overlay-hovered px-3 py-[6px] text-[14px] text-text-default hover:bg-[#3d474f] transition-colors"
+              >
+                <ActionIcon action={icon} />
+                {label}
+              </button>
+            ))}
           </div>
 
           {/* Two-column layout */}
@@ -111,17 +221,29 @@ export function CardModal() {
             <div className="flex-1 min-w-0">
               {/* Description section */}
               <div className="mb-6">
-                <div className="flex items-center gap-3 mb-2">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-text-subtle">
-                    <path d="M3 5h14M3 9h10M3 13h12" strokeLinecap="round" />
-                  </svg>
-                  <h3 className="text-[16px] font-semibold text-text-default">Description</h3>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-3">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-text-subtle">
+                      <path d="M3 5h14M3 9h10M3 13h12" strokeLinecap="round" />
+                    </svg>
+                    <h3 className="text-[16px] font-semibold text-text-default">Description</h3>
+                  </div>
+                  {card.description && !isEditingDesc && (
+                    <button
+                      onClick={() => {
+                        setDescValue(card.description || '');
+                        setIsEditingDesc(true);
+                      }}
+                      className="rounded-[3px] bg-surface-overlay-hovered px-3 py-[4px] text-[14px] text-text-default hover:bg-[#3d474f] transition-colors"
+                    >
+                      Edit
+                    </button>
+                  )}
                 </div>
 
                 {isEditingDesc ? (
                   <div className="ml-8">
                     <textarea
-                      ref={descRef}
                       value={descValue}
                       onChange={(e) => setDescValue(e.target.value)}
                       className="w-full min-h-[108px] rounded-[4px] border border-[#738496] bg-surface-input p-2 text-[14px] text-text-default placeholder-text-subtlest resize-y focus:outline-none focus:border-[#85b8ff] focus:ring-1 focus:ring-[#85b8ff]"
@@ -145,56 +267,115 @@ export function CardModal() {
                   </div>
                 ) : (
                   <div
-                    className="ml-8 min-h-[56px] cursor-pointer rounded-[4px] bg-surface-overlay-hovered p-3 text-[14px] text-text-subtle hover:bg-[#3d474f] transition-colors"
+                    className="ml-8 cursor-pointer rounded-[4px] text-[14px] leading-[22px] text-text-subtle hover:bg-[#3d474f]/50 transition-colors"
                     onClick={() => {
                       setDescValue(card.description || '');
                       setIsEditingDesc(true);
                     }}
                   >
-                    {card.description || 'Add a more detailed description...'}
+                    {card.description ? (
+                      <div className="whitespace-pre-wrap text-text-default py-1">
+                        {card.description}
+                      </div>
+                    ) : (
+                      <div className="min-h-[56px] rounded-[4px] bg-surface-overlay-hovered p-3">
+                        Add a more detailed description...
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
 
-              {/* Activity section */}
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-3">
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-text-subtle">
-                      <rect x="2" y="3" width="16" height="14" rx="2" />
-                      <path d="M6 7h8M6 11h5" strokeLinecap="round" />
-                    </svg>
-                    <h3 className="text-[16px] font-semibold text-text-default">Comments and activity</h3>
+              {/* Attachments section */}
+              {card.badgeAttachments && card.badgeAttachments > 0 && (
+                <div className="mb-6">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-3">
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-text-subtle">
+                        <path d="M10 4L5.5 8.5a3.5 3.5 0 0 0 5 5L15 9a2.5 2.5 0 0 0-3.5-3.5L7 10a1.5 1.5 0 0 0 2 2l4.5-4.5" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                      <h3 className="text-[16px] font-semibold text-text-default">Attachments</h3>
+                    </div>
+                    <button className="rounded-[3px] bg-surface-overlay-hovered px-3 py-[4px] text-[14px] text-text-default hover:bg-[#3d474f] transition-colors">
+                      Add
+                    </button>
                   </div>
-                  <button className="rounded-[3px] border border-[#738496] px-3 py-[4px] text-[14px] text-text-default hover:bg-surface-overlay-hovered transition-colors">
-                    Show details
-                  </button>
-                </div>
-
-                {/* Comment input */}
-                <div className="ml-8">
-                  <div className="rounded-[8px] border border-[#738496] bg-surface-input p-3 text-[14px] text-text-subtlest cursor-pointer hover:border-[#85b8ff] transition-colors">
-                    Write a comment...
+                  <div className="ml-8">
+                    <p className="text-[12px] text-text-subtlest mb-2">Files</p>
+                    <div className="flex items-center gap-3 rounded-[8px] p-2 hover:bg-surface-overlay-hovered transition-colors">
+                      {/* File thumbnail */}
+                      <div
+                        className="flex h-[48px] w-[64px] flex-shrink-0 items-center justify-center rounded-[4px] text-[10px] font-bold text-[#1d2125]"
+                        style={{ backgroundColor: coverBg || '#579dff' }}
+                      >
+                        {emoji && <span className="text-[14px] mr-0.5">{emoji}</span>}
+                        <span className="text-[9px]">{card.title}</span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[14px] text-text-default font-medium truncate">{card.title}.png</p>
+                        <p className="text-[12px] text-text-subtlest">Added Jan 2, 2019, 5:52 PM &bull; Cover</p>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <button className="flex h-7 w-7 items-center justify-center rounded-[4px] text-text-subtle hover:bg-[#3d474f] transition-colors">
+                          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                            <path d="M2 12l4-4M10 2l2 2" />
+                            <path d="M6 8l4-4" />
+                          </svg>
+                        </button>
+                        <button className="flex h-7 w-7 items-center justify-center rounded-[4px] text-text-subtle hover:bg-[#3d474f] transition-colors">
+                          <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+                            <circle cx="3" cy="7" r="1.2" />
+                            <circle cx="7" cy="7" r="1.2" />
+                            <circle cx="11" cy="7" r="1.2" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
 
-            {/* Sidebar actions */}
-            <div className="w-[168px] flex-shrink-0">
-              <div className="flex flex-col gap-2">
-                {['Add', 'Labels', 'Dates', 'Checklist', 'Members'].map((label) => (
-                  <button
-                    key={label}
-                    className="flex items-center gap-2 rounded-[3px] bg-surface-overlay-hovered px-3 py-[6px] text-[14px] text-text-default hover:bg-[#3d474f] transition-colors text-left"
-                  >
-                    <ActionIcon action={label} />
-                    {label}
-                  </button>
-                ))}
+            {/* Right column: Comments and activity */}
+            <div className="w-[280px] flex-shrink-0">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-text-subtle">
+                    <rect x="2" y="3" width="14" height="12" rx="2" />
+                    <path d="M5 7h8M5 10h5" strokeLinecap="round" />
+                  </svg>
+                  <h3 className="text-[14px] font-semibold text-text-default">Comments and activity</h3>
+                </div>
+                <button className="rounded-[3px] border border-[#738496] px-2.5 py-[3px] text-[12px] text-text-default hover:bg-surface-overlay-hovered transition-colors">
+                  Show details
+                </button>
+              </div>
+              <div className="rounded-[8px] border border-[#738496] bg-surface-input p-3 text-[14px] text-text-subtlest cursor-pointer hover:border-[#85b8ff] transition-colors">
+                Write a comment...
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Bottom tabs bar */}
+        <div className="flex items-center justify-center gap-0 border-t border-[#3d474f] px-6 py-2">
+          {[
+            { label: 'Power-ups', icon: 'powerup' },
+            { label: 'Automations', icon: 'automation' },
+            { label: 'Comments', icon: 'comments', active: true },
+          ].map(({ label, icon, active }) => (
+            <button
+              key={label}
+              className={`flex items-center gap-1.5 px-4 py-2 text-[14px] transition-colors rounded-[4px] ${
+                active
+                  ? 'text-[#579dff] border-b-2 border-[#579dff]'
+                  : 'text-text-subtle hover:bg-surface-overlay-hovered'
+              }`}
+            >
+              <TabIcon icon={icon} active={!!active} />
+              {label}
+            </button>
+          ))}
         </div>
       </div>
     </div>
@@ -202,39 +383,67 @@ export function CardModal() {
 }
 
 function ActionIcon({ action }: { action: string }) {
-  const className = 'w-4 h-4 text-text-subtle';
+  const cls = 'w-4 h-4 text-text-subtle';
   switch (action) {
-    case 'Add':
+    case 'add':
       return (
-        <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+        <svg className={cls} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
           <path d="M8 2v12M2 8h12" />
         </svg>
       );
-    case 'Labels':
+    case 'labels':
       return (
-        <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <svg className={cls} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
           <path d="M2 4a2 2 0 012-2h4l6 6-6 6-6-6V4z" strokeLinejoin="round" />
           <circle cx="5.5" cy="5.5" r="1" fill="currentColor" />
         </svg>
       );
-    case 'Dates':
+    case 'dates':
       return (
-        <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <svg className={cls} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
           <rect x="2" y="3" width="12" height="11" rx="1.5" />
           <path d="M2 6.5h12M5 2v2M11 2v2" strokeLinecap="round" />
         </svg>
       );
-    case 'Checklist':
+    case 'checklist':
       return (
-        <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+        <svg className={cls} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
           <path d="M3 4l2 2 4-4M3 10l2 2 4-4" />
         </svg>
       );
-    case 'Members':
+    case 'members':
       return (
-        <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <svg className={cls} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
           <circle cx="8" cy="5" r="3" />
           <path d="M2.5 14c0-3 2.5-5 5.5-5s5.5 2 5.5 5" strokeLinecap="round" />
+        </svg>
+      );
+    default:
+      return null;
+  }
+}
+
+function TabIcon({ icon, active }: { icon: string; active: boolean }) {
+  const color = active ? 'text-[#579dff]' : 'text-text-subtle';
+  const cls = `w-4 h-4 ${color}`;
+  switch (icon) {
+    case 'powerup':
+      return (
+        <svg className={cls} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M8 2l2 5h3l-4 3.5 1.5 4.5L8 12l-2.5 3 1.5-4.5L3 7h3l2-5z" />
+        </svg>
+      );
+    case 'automation':
+      return (
+        <svg className={cls} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M9 2L5 9h6l-4 7" />
+        </svg>
+      );
+    case 'comments':
+      return (
+        <svg className={cls} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <rect x="2" y="3" width="12" height="9" rx="2" />
+          <path d="M5 7h6M5 9.5h3" strokeLinecap="round" />
         </svg>
       );
     default:
