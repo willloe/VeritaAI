@@ -2,8 +2,9 @@ import { useCallback } from 'react';
 import {
   SortableContext,
   verticalListSortingStrategy,
+  useSortable,
 } from '@dnd-kit/sortable';
-import { useDroppable } from '@dnd-kit/core';
+import { CSS } from '@dnd-kit/utilities';
 import type { List } from '@/types';
 import { useBoardStore } from '@/store';
 import { SortableCard } from '../Card/SortableCard';
@@ -37,9 +38,22 @@ export function BoardList({ list }: BoardListProps) {
   const openListMenuId = useBoardStore((s) => s.openListMenuId);
   const setAddComposer = useBoardStore((s) => s.setAddComposer);
 
-  const { setNodeRef } = useDroppable({
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
     id: list.id,
+    data: { type: 'list' },
   });
+
+  const style = {
+    transform: CSS.Transform.toString(transform ? { ...transform, scaleX: 1, scaleY: 1 } : null),
+    transition,
+  };
 
   const isComposerOpen = addComposerListId === list.id;
   const isMenuOpen = openListMenuId === list.id;
@@ -55,19 +69,26 @@ export function BoardList({ list }: BoardListProps) {
   }, [list.id, setAddComposer]);
 
   return (
-    <div className="relative flex w-[272px] min-w-[272px] flex-col rounded-list bg-surface-overlay max-h-[calc(100vh-100px)]">
-      {/* List header */}
-      <ListHeader
-        list={list}
-        cardCount={cards.length}
-        limit={listLimit}
-        isOverLimit={isOverLimit}
-        isMenuOpen={isMenuOpen}
-      />
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`relative flex w-[272px] min-w-[272px] flex-col rounded-list bg-surface-overlay max-h-[calc(100vh-100px)] ${
+        isDragging ? 'opacity-40' : ''
+      }`}
+    >
+      {/* List header — drag handle */}
+      <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing">
+        <ListHeader
+          list={list}
+          cardCount={cards.length}
+          limit={listLimit}
+          isOverLimit={isOverLimit}
+          isMenuOpen={isMenuOpen}
+        />
+      </div>
 
       {/* Cards container */}
       <div
-        ref={setNodeRef}
         className="list-scroll flex flex-1 flex-col gap-[6px] overflow-y-auto px-2 py-0.5 min-h-[2px]"
       >
         <SortableContext items={cardIds} strategy={verticalListSortingStrategy}>

@@ -17,6 +17,7 @@ export function SortableCard({ card }: SortableCardProps) {
     isDragging,
   } = useSortable({
     id: card.id,
+    data: { type: 'card' },
   });
 
   const style = {

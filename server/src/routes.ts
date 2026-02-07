@@ -173,6 +173,25 @@ router.post('/lists', (req: Request, res: Response) => {
   res.status(201).json(list);
 });
 
+// POST /lists/reorder — reorder lists
+router.post('/lists/reorder', (req: Request, res: Response) => {
+  const { listIds } = req.body;
+
+  if (!Array.isArray(listIds)) {
+    res.status(400).json({ error: 'listIds array is required' });
+    return;
+  }
+
+  const data = readData();
+  listIds.forEach((id: string, index: number) => {
+    const list = data.lists.find((l) => l.id === id);
+    if (list) list.position = index;
+  });
+
+  writeData(data);
+  res.json({ success: true });
+});
+
 // PATCH /lists/:listId — update list title
 router.patch('/lists/:listId', (req: Request, res: Response) => {
   const { listId } = req.params;

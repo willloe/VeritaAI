@@ -7,6 +7,7 @@ interface UIState {
   openListMenuId: string | null;
   addComposerListId: string | null;
   draggingCardId: string | null;
+  draggingListId: string | null;
   hoveredCardId: string | null;
 }
 
@@ -24,12 +25,15 @@ interface BoardState extends UIState {
   toggleCardComplete: (cardId: string) => void;
   moveCard: (payload: MoveCardPayload) => void;
   persistMove: (payload: MoveCardPayload) => Promise<void>;
+  moveList: (fromIndex: number, toIndex: number) => void;
+  persistListOrder: () => Promise<void>;
 
   // UI actions
   setSelectedCard: (id: string | null) => void;
   setOpenListMenu: (id: string | null) => void;
   setAddComposer: (id: string | null) => void;
   setDraggingCard: (id: string | null) => void;
+  setDraggingList: (id: string | null) => void;
   setHoveredCard: (id: string | null) => void;
 
   // Selectors
@@ -46,6 +50,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   openListMenuId: null,
   addComposerListId: null,
   draggingCardId: null,
+  draggingListId: null,
   hoveredCardId: null,
 
   fetchBoard: async () => {
@@ -130,10 +135,31 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     }
   },
 
+  moveList: (fromIndex, toIndex) => {
+    set((s) => {
+      const newLists = [...s.lists];
+      const [moved] = newLists.splice(fromIndex, 1);
+      newLists.splice(toIndex, 0, moved);
+      // Re-number positions
+      newLists.forEach((l, i) => { l.position = i; });
+      return { lists: newLists };
+    });
+  },
+
+  persistListOrder: async () => {
+    try {
+      const listIds = get().lists.map((l) => l.id);
+      await api.reorderLists(listIds);
+    } catch {
+      get().fetchBoard();
+    }
+  },
+
   setSelectedCard: (id) => set({ selectedCardId: id }),
   setOpenListMenu: (id) => set({ openListMenuId: id }),
   setAddComposer: (id) => set({ addComposerListId: id }),
   setDraggingCard: (id) => set({ draggingCardId: id }),
+  setDraggingList: (id: string | null) => set({ draggingListId: id }),
   setHoveredCard: (id) => set({ hoveredCardId: id }),
 
   getCardsByList: (listId) =>

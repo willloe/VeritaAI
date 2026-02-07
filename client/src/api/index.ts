@@ -45,6 +45,14 @@ export const api = {
     });
   },
 
+  reorderLists(listIds: string[]): Promise<{ success: boolean }> {
+    return json<{ success: boolean }>(`${BASE}/lists/reorder`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ listIds }),
+    });
+  },
+
   updateListTitle(listId: string, title: string): Promise<{ success: boolean }> {
     return json<{ success: boolean }>(`${BASE}/lists/${listId}`, {
       method: 'PATCH',
