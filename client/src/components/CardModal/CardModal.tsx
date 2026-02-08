@@ -94,7 +94,8 @@ export function CardModal() {
     >
       <div
         ref={modalRef}
-        className="relative w-full max-w-[768px] rounded-modal bg-surface-overlay shadow-modal mx-4 overflow-hidden"
+        className="relative w-full max-w-[768px] rounded-modal shadow-modal mx-4 overflow-hidden"
+        style={{ backgroundColor: '#ffffff' }}
         tabIndex={-1}
         role="dialog"
         aria-modal="true"
@@ -157,7 +158,7 @@ export function CardModal() {
         {!hasCover && (
           <button
             onClick={close}
-            className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-[4px] text-text-subtle hover:bg-surface-overlay-hovered transition-colors z-10"
+            className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-[4px] text-[#626f86] hover:bg-[#091e420f] transition-colors z-10"
             aria-label="Close modal"
           >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -182,14 +183,14 @@ export function CardModal() {
                 </svg>
               ) : (
                 <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-                  <circle cx="11" cy="11" r="9.5" stroke="#738496" strokeWidth="1.5" />
+                  <circle cx="11" cy="11" r="9.5" stroke="#626f86" strokeWidth="1.5" />
                 </svg>
               )}
             </button>
             <div>
-              <h2 className="text-[20px] font-semibold leading-7 text-text-default">{card.title}</h2>
+              <h2 className="text-[20px] font-semibold leading-7 text-[#172b4d]">{card.title}</h2>
               {list && !hasCover && (
-                <p className="mt-0.5 text-[14px] text-text-subtle">
+                <p className="mt-0.5 text-[14px] text-[#44546f]">
                   in list <span className="underline decoration-dotted">{list.title}</span>
                 </p>
               )}
@@ -207,7 +208,7 @@ export function CardModal() {
             ].map(({ label, icon }) => (
               <button
                 key={label}
-                className="flex items-center gap-1.5 rounded-[3px] bg-surface-overlay-hovered px-3 py-[6px] text-[14px] text-text-default hover:bg-[#3d474f] transition-colors"
+                className="flex items-center gap-1.5 rounded-[3px] bg-[#091e420f] px-3 py-[6px] text-[14px] text-[#172b4d] hover:bg-[#091e4224] transition-colors"
               >
                 <ActionIcon action={icon} />
                 {label}
@@ -223,10 +224,10 @@ export function CardModal() {
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-3">
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-text-subtle">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-[#44546f]">
                       <path d="M3 5h14M3 9h10M3 13h12" strokeLinecap="round" />
                     </svg>
-                    <h3 className="text-[16px] font-semibold text-text-default">Description</h3>
+                    <h3 className="text-[16px] font-semibold text-[#172b4d]">Description</h3>
                   </div>
                   {card.description && !isEditingDesc && (
                     <button
@@ -234,7 +235,7 @@ export function CardModal() {
                         setDescValue(card.description || '');
                         setIsEditingDesc(true);
                       }}
-                      className="rounded-[3px] bg-surface-overlay-hovered px-3 py-[4px] text-[14px] text-text-default hover:bg-[#3d474f] transition-colors"
+                      className="rounded-[3px] bg-[#091e420f] px-3 py-[4px] text-[14px] text-[#172b4d] hover:bg-[#091e4224] transition-colors"
                     >
                       Edit
                     </button>
@@ -246,20 +247,20 @@ export function CardModal() {
                     <textarea
                       value={descValue}
                       onChange={(e) => setDescValue(e.target.value)}
-                      className="w-full min-h-[108px] rounded-[4px] border border-[#738496] bg-surface-input p-2 text-[14px] text-text-default placeholder-text-subtlest resize-y focus:outline-none focus:border-[#85b8ff] focus:ring-1 focus:ring-[#85b8ff]"
+                      className="w-full min-h-[108px] rounded-[4px] border border-[#091e4224] bg-white p-2 text-[14px] text-[#172b4d] placeholder-[#626f86] resize-y focus:outline-none focus:border-[#388bff] focus:ring-1 focus:ring-[#388bff]"
                       placeholder="Add a more detailed description..."
                       autoFocus
                     />
                     <div className="flex gap-2 mt-2">
                       <button
                         onClick={handleSaveDesc}
-                        className="rounded-[3px] bg-[#579dff] px-3 py-[6px] text-[14px] font-medium text-[#1d2125] hover:bg-[#85b8ff] transition-colors"
+                        className="rounded-[3px] bg-[#0c66e4] px-3 py-[6px] text-[14px] font-medium text-white hover:bg-[#0055cc] transition-colors"
                       >
                         Save
                       </button>
                       <button
                         onClick={() => setIsEditingDesc(false)}
-                        className="rounded-[3px] px-3 py-[6px] text-[14px] text-text-subtle hover:bg-surface-overlay-hovered transition-colors"
+                        className="rounded-[3px] px-3 py-[6px] text-[14px] text-[#44546f] hover:bg-[#091e420f] transition-colors"
                       >
                         Cancel
                       </button>
@@ -267,18 +268,18 @@ export function CardModal() {
                   </div>
                 ) : (
                   <div
-                    className="ml-8 cursor-pointer rounded-[4px] text-[14px] leading-[22px] text-text-subtle hover:bg-[#3d474f]/50 transition-colors"
+                    className="ml-8 cursor-pointer rounded-[4px] text-[14px] leading-[22px] text-[#44546f] hover:bg-[#091e420f] transition-colors"
                     onClick={() => {
                       setDescValue(card.description || '');
                       setIsEditingDesc(true);
                     }}
                   >
                     {card.description ? (
-                      <div className="whitespace-pre-wrap text-text-default py-1">
+                      <div className="whitespace-pre-wrap text-[#172b4d] py-1">
                         {card.description}
                       </div>
                     ) : (
-                      <div className="min-h-[56px] rounded-[4px] bg-surface-overlay-hovered p-3">
+                      <div className="min-h-[56px] rounded-[4px] bg-[#091e420f] p-3">
                         Add a more detailed description...
                       </div>
                     )}
@@ -291,18 +292,18 @@ export function CardModal() {
                 <div className="mb-6">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-3">
-                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-text-subtle">
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-[#44546f]">
                         <path d="M10 4L5.5 8.5a3.5 3.5 0 0 0 5 5L15 9a2.5 2.5 0 0 0-3.5-3.5L7 10a1.5 1.5 0 0 0 2 2l4.5-4.5" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
-                      <h3 className="text-[16px] font-semibold text-text-default">Attachments</h3>
+                      <h3 className="text-[16px] font-semibold text-[#172b4d]">Attachments</h3>
                     </div>
-                    <button className="rounded-[3px] bg-surface-overlay-hovered px-3 py-[4px] text-[14px] text-text-default hover:bg-[#3d474f] transition-colors">
+                    <button className="rounded-[3px] bg-[#091e420f] px-3 py-[4px] text-[14px] text-[#172b4d] hover:bg-[#091e4224] transition-colors">
                       Add
                     </button>
                   </div>
                   <div className="ml-8">
-                    <p className="text-[12px] text-text-subtlest mb-2">Files</p>
-                    <div className="flex items-center gap-3 rounded-[8px] p-2 hover:bg-surface-overlay-hovered transition-colors">
+                    <p className="text-[12px] text-[#626f86] mb-2">Files</p>
+                    <div className="flex items-center gap-3 rounded-[8px] p-2 hover:bg-[#091e420f] transition-colors">
                       {/* File thumbnail */}
                       <div
                         className="flex h-[48px] w-[64px] flex-shrink-0 items-center justify-center rounded-[4px] text-[10px] font-bold text-[#1d2125]"
@@ -312,17 +313,17 @@ export function CardModal() {
                         <span className="text-[9px]">{card.title}</span>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-[14px] text-text-default font-medium truncate">{card.title}.png</p>
-                        <p className="text-[12px] text-text-subtlest">Added Jan 2, 2019, 5:52 PM &bull; Cover</p>
+                        <p className="text-[14px] text-[#172b4d] font-medium truncate">{card.title}.png</p>
+                        <p className="text-[12px] text-[#626f86]">Added Jan 2, 2019, 5:52 PM &bull; Cover</p>
                       </div>
                       <div className="flex items-center gap-1">
-                        <button className="flex h-7 w-7 items-center justify-center rounded-[4px] text-text-subtle hover:bg-[#3d474f] transition-colors">
+                        <button className="flex h-7 w-7 items-center justify-center rounded-[4px] text-[#626f86] hover:bg-[#091e420f] transition-colors">
                           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
                             <path d="M2 12l4-4M10 2l2 2" />
                             <path d="M6 8l4-4" />
                           </svg>
                         </button>
-                        <button className="flex h-7 w-7 items-center justify-center rounded-[4px] text-text-subtle hover:bg-[#3d474f] transition-colors">
+                        <button className="flex h-7 w-7 items-center justify-center rounded-[4px] text-[#626f86] hover:bg-[#091e420f] transition-colors">
                           <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
                             <circle cx="3" cy="7" r="1.2" />
                             <circle cx="7" cy="7" r="1.2" />
@@ -340,17 +341,17 @@ export function CardModal() {
             <div className="w-[280px] flex-shrink-0">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
-                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-text-subtle">
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-[#44546f]">
                     <rect x="2" y="3" width="14" height="12" rx="2" />
                     <path d="M5 7h8M5 10h5" strokeLinecap="round" />
                   </svg>
-                  <h3 className="text-[14px] font-semibold text-text-default">Comments and activity</h3>
+                  <h3 className="text-[14px] font-semibold text-[#172b4d]">Comments and activity</h3>
                 </div>
-                <button className="rounded-[3px] border border-[#738496] px-2.5 py-[3px] text-[12px] text-text-default hover:bg-surface-overlay-hovered transition-colors">
+                <button className="rounded-[3px] border border-[#091e4224] px-2.5 py-[3px] text-[12px] text-[#172b4d] hover:bg-[#091e420f] transition-colors">
                   Show details
                 </button>
               </div>
-              <div className="rounded-[8px] border border-[#738496] bg-surface-input p-3 text-[14px] text-text-subtlest cursor-pointer hover:border-[#85b8ff] transition-colors">
+              <div className="rounded-[8px] border border-[#091e4224] bg-white p-3 text-[14px] text-[#626f86] cursor-pointer hover:border-[#388bff] transition-colors">
                 Write a comment...
               </div>
             </div>
@@ -358,7 +359,7 @@ export function CardModal() {
         </div>
 
         {/* Bottom tabs bar */}
-        <div className="flex items-center justify-center gap-0 border-t border-[#3d474f] px-6 py-2">
+        <div className="flex items-center justify-center gap-0 border-t border-[#091e4224] px-6 py-2" style={{ backgroundColor: '#282e33' }}>
           {[
             { label: 'Power-ups', icon: 'powerup' },
             { label: 'Automations', icon: 'automation' },
@@ -369,7 +370,7 @@ export function CardModal() {
               className={`flex items-center gap-1.5 px-4 py-2 text-[14px] transition-colors rounded-[4px] ${
                 active
                   ? 'text-[#579dff] border-b-2 border-[#579dff]'
-                  : 'text-text-subtle hover:bg-surface-overlay-hovered'
+                  : 'text-[#9fadbc] hover:bg-[#3d474f]'
               }`}
             >
               <TabIcon icon={icon} active={!!active} />
@@ -383,7 +384,7 @@ export function CardModal() {
 }
 
 function ActionIcon({ action }: { action: string }) {
-  const cls = 'w-4 h-4 text-text-subtle';
+  const cls = 'w-4 h-4 text-[#626f86]';
   switch (action) {
     case 'add':
       return (
@@ -424,7 +425,7 @@ function ActionIcon({ action }: { action: string }) {
 }
 
 function TabIcon({ icon, active }: { icon: string; active: boolean }) {
-  const color = active ? 'text-[#579dff]' : 'text-text-subtle';
+  const color = active ? 'text-[#579dff]' : 'text-[#9fadbc]';
   const cls = `w-4 h-4 ${color}`;
   switch (icon) {
     case 'powerup':
